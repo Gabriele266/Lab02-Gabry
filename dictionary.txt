@@ -96,13 +96,13 @@ tähti stella
 aurinko sole
 kukka fiore
 puu albero
-lehti foglia
+lehti rivista,foglia
 sade pioggia
 lumi neve
 tuuli vento
 myrsky tempesta
 kirja libro
-lehti rivista
 sanomalehti giornale
 kynä penna
 paperi carta
+alram piazza

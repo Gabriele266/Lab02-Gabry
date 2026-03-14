@@ -37,11 +37,12 @@ class Translation:
 
     """Create a new translation and control the values set"""
     def __init__(self, alien: str, italian: str):
-        if not Translation.validate(alien, italian):
-            raise ValueError("Invalid input")
+        if italian.find(",") < 0:
+            if not Translation.validate(alien, italian):
+                raise ValueError("Invalid input")
 
         self._alien = alien.lower()
-        self._italian = {italian.lower()}
+        self._italian = set(italian.lower().split(","))
 
     @property
     def alien(self) -> str:
@@ -62,6 +63,12 @@ class Translation:
     """Return true if this term has only one tranlsation"""
     def isunique(self) -> bool:
         return len(self._italian) == 1
+
+    def print(self):
+        if self.isunique():
+            print(f"{self._alien} -> {self.translate()}")
+        else:
+            print(f"{self._alien} -> {self._italian}")
 
     def __eq__(self, other):
         return self.alien == other.alien and self.italian == other.italian
@@ -129,8 +136,6 @@ class Dictionary:
 
         return l
 
-
-
     """Get the translation for an alien term
     Note: returns the tranlsation object to handle multiple translations"""
     def get_translation(self, alien: str) -> Translation:
@@ -143,6 +148,11 @@ class Dictionary:
             dictionary.add_translation(t)
 
         return dictionary
+
+    def print_all(self):
+        print(f"Dictionary with {self.size()} translations")
+
+        self.foreach_trans(lambda t: t.print())
 
     def __str__(self):
         return f"Dictionary with {len(self._translations)} translations"

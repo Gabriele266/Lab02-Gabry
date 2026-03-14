@@ -1,9 +1,11 @@
 import unittest
-from io import UnsupportedOperation
+import src.translator.workers as workers
 
 import src.domain.classes as domain
 
 class TestCase(unittest.TestCase):
+    def test_utils(self):
+        self.assertIs(workers.set_to_str({"a"}), "a")
 
     def test_translation_validation(self):
        t = domain.Translation.validate("erum", "Mimmo")
@@ -70,6 +72,13 @@ class TestCase(unittest.TestCase):
         self.assertIs(d.multiple_translations, 3)
         self.assertIs(d.single_translations, 0)
 
+    def test_multiple_import(self):
+        s = "lehti rivista,foglia"
+        tk = s.split(" ")
+
+        dic = domain.Dictionary()
+        dic.import_from_strings(tk[0].strip(), tk[1].strip())
+        self.assertIs(dic.size(), 1)
 
 if __name__ == '__main__':
     unittest.main()
