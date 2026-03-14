@@ -56,7 +56,20 @@ class TestCase(unittest.TestCase):
         d.foreach_trans(lambda t:
                         self.assertTrue(t.alien in d._get_translatable()))
 
-        self.assertRaises(UnsupportedOperation, d.import_from_strings, "herib", "liliimi")
+    def test_compex_dict(self):
+        d = domain.Dictionary.from_translations(
+            [domain.Translation.from_multiple("urub", ["lim", "mim"]),
+             domain.Translation.from_multiple("brit", ["rip", "vino"]),
+             domain.Translation("tritta", "pippa")])
+
+        self.assertIs(d.single_translations, 1)
+        self.assertIs(d.multiple_translations, 2)
+        self.assertIs(d.size(), 3)
+
+        d.add_translation(domain.Translation("tritta", "pizza"))
+        self.assertIs(d.multiple_translations, 3)
+        self.assertIs(d.single_translations, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

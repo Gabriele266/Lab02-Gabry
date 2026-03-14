@@ -78,9 +78,10 @@ class Dictionary:
         self.add_translation(t)
 
     def add_translation(self, t: Translation):
-        if self.exists(t.alien):
-            raise UnsupportedOperation("Multi-translation not supported")
-        self._translations[t.alien] = t.italian
+        if self.exists(t.alien):        # if translation already exists, add the new term
+            self._translations[t.alien].add(t.translate())
+        else:
+            self._translations[t.alien] = t.italian
 
     """Returns the list of all the alien terms that have a translation"""
     def _get_translatable(self) -> list[str]:
@@ -98,6 +99,19 @@ class Dictionary:
 
         self._translations.pop(alien.lower())
 
+    """Count how many alien words have multiple translations """
+    @property
+    def multiple_translations(self) -> int:
+        i = 0
+        for t in self._translations:
+            if len(self._translations[t]) > 1:
+                i += 1
+        return i
+
+    """Count how many words have single translations """
+    @property
+    def single_translations(self) -> int:
+        return self.size() - self.multiple_translations
 
     """Execute a function to every translation passing the translation as first argument"""
     def foreach_trans(self, function):
