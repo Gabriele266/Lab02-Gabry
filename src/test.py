@@ -1,4 +1,6 @@
 import unittest
+from io import UnsupportedOperation
+
 import src.domain.classes as domain
 
 class TestCase(unittest.TestCase):
@@ -18,6 +20,13 @@ class TestCase(unittest.TestCase):
        to = domain.Translation("erum", "Mimmo")
        to2 = domain.Translation("erum", "Mimmo")
        self.assertEqual(to, to2)
+
+    def test_multiple_translations(self):
+        t = domain.Translation.from_multiple("urbit", ["mimmo", "lillo", "pizza"])
+
+        self.assertFalse(t.isunique())
+        self.assertTrue("mimmo" in t.italian)
+        self.assertTrue(t.translate() in t.italian)
 
     def test_dictionary(self):
         d = domain.Dictionary()
@@ -46,6 +55,8 @@ class TestCase(unittest.TestCase):
 
         d.foreach_trans(lambda t:
                         self.assertTrue(t.alien in d._get_translatable()))
+
+        self.assertRaises(UnsupportedOperation, d.import_from_strings, "herib", "liliimi")
 
 if __name__ == '__main__':
     unittest.main()
