@@ -44,5 +44,8 @@ class TestCase(unittest.TestCase):
 
         self.assertEqual(d.size(), 3)
 
+        d.foreach_trans(lambda t:
+                        self.assertTrue(t.alien in d._get_translatable()))
+
 if __name__ == '__main__':
     unittest.main()

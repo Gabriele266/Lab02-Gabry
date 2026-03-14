@@ -68,6 +68,25 @@ class Dictionary:
 
         self._translations.pop(alien.lower())
 
+
+    """Execute a function to every translation passing the translation as first argument"""
+    def foreach_trans(self, function):
+        for alien in self._translations:
+            key = alien.lower()
+            function(Translation(key, self._translations[key]))
+
+    """Map the entire dictionary to something else into a list"""
+    def map_dictionary(self, function):
+        l = []
+
+        for alien in self._translations:
+            key = alien.lower()
+            l.append(function(Translation(key, self._translations[key])))
+
+        return l
+
+
+
     """Get the translation for an alien term
     Note: returns the tranlsation object to handle multiple translations"""
     def get_translation(self, alien: str) -> Translation:
