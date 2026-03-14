@@ -7,11 +7,13 @@ class TestCase(unittest.TestCase):
        t = domain.Translation.validate("erum", "Mimmo")
        t2 = domain.Translation.validate("erum23432 3423", "Mimmo")
        t3 = domain.Translation.validate("ciao ciao", "Mimmo")
+       t4 = domain.Translation.validate("neljä", "Mimmo")
 
        self.assertTrue(t)
        self.assertFalse(t2)
        self.assertFalse(t3, "Due parole separate da spazio non sono valide")
        self.assertFalse(domain.Translation.validate("/Ciao", "/Addio"))
+       self.assertTrue(t4)
        self.assertRaises(ValueError, domain.Translation.__init__, "erum1234", "Mimmo", "Invalid constructor parameters should raise exception")
        to = domain.Translation("erum", "Mimmo")
        to2 = domain.Translation("erum", "Mimmo")
@@ -19,9 +21,9 @@ class TestCase(unittest.TestCase):
 
     def test_dictionary(self):
         d = domain.Dictionary()
-        self.assertRaises(ValueError, d.add, "Mimmo23", "Lillo2323 &%")
-        d.add("Alam", "Ciao")
-        d.add("erim", "Bellissimo")
+        self.assertRaises(ValueError, d.import_from_strings, "Mimmo23", "Lillo2323 &%")
+        d.import_from_strings("Alam", "Ciao")
+        d.import_from_strings("erim", "Bellissimo")
 
         self.assertIs(d.size(), 2)
         self.assertTrue(d.exists("Alam"))

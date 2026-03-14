@@ -1,6 +1,10 @@
 # Module with all the domain classes
-from gettext import translation
+import re
 
+"""Check if a string is a single word with no numbers, spaces, symbols, accepting also unicode chars"""
+def is_valid_input(s: str) -> bool:
+    exp = re.compile(r'^[^\W\d_]+$')
+    return exp.match(s) is not None
 
 class Translation:
     _alien: str
@@ -8,7 +12,7 @@ class Translation:
 
     @staticmethod
     def validate(alien: str, italian: str) -> bool:
-        return alien.isalpha() and italian.isalpha()
+        return is_valid_input(alien) and is_valid_input(italian)
 
     """Create a new translation and control the values set"""
     def __init__(self, alien: str, italian: str):
@@ -41,7 +45,7 @@ class Dictionary:
         self._translations: dict[str, str] = {}
 
     """Append a new translation to the dictionary and verify the validity"""
-    def add(self, alien: str, italian: str):
+    def import_from_strings(self, alien: str, italian: str):
         t = Translation(alien, italian)
         self._translations[t.alien] = t.italian
 
@@ -76,3 +80,6 @@ class Dictionary:
             dictionary.add_translation(t)
 
         return dictionary
+
+    def __str__(self):
+        return f"Dictionary with {len(self._translations)} translations"
