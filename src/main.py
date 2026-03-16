@@ -18,7 +18,9 @@ def console_intro():
     print()
     return int(input("Your choice --> "))
 
-"""Add a new translation to the dictionary"""
+"""Add a new translation to the dictionary
+Also accepts multiple translations, separated by comma
+"""
 def _add_translation(dictionary: domain.Dictionary) -> bool:
     print("This will add a new translation to the dictionary")
     alien = input("Insert alien word to translate (no spaces, unicode): ")
@@ -26,17 +28,21 @@ def _add_translation(dictionary: domain.Dictionary) -> bool:
         print("Invalid input")
         return False
 
-    italian = input("Insert italian word: ")
-    if not domain.is_valid_input(italian):
-        print("Invalid input")
-        return False
+    italian_terms = input("Insert italian word (or list of comma-separated): ")        # can be a single italian word or a list separated by comma
+    if "," in italian_terms:
+        italian_terms = italian_terms.split(",")
+    else:
+        italian_terms = [italian_terms]
 
-    try:
-        dictionary.import_from_strings(alien, italian)
-        print("New term added to dictionary successfully")
-    except UnsupportedOperation as e:
-        print("Tried to assign a new translation to a pre-existing translation, currently unsupported")
-        return False
+    # validate all terms in the italian list
+    for term in italian_terms:
+        if domain.is_valid_input(term):
+            dictionary.import_from_strings(alien, term)
+        else:
+            print(f"Invalid italian term {term} for {alien}")
+            return False
+
+    print(f"New alien term added to dictionary with {len(italian_terms)} italian terms associated")
 
     return True
 
