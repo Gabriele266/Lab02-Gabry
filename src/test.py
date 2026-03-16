@@ -2,6 +2,8 @@ import unittest
 import src.translator.workers as workers
 
 import src.domain.classes as domain
+from src.domain.search import Wildcard
+
 
 class TestCase(unittest.TestCase):
     def test_utils(self):
@@ -79,6 +81,37 @@ class TestCase(unittest.TestCase):
         dic = domain.Dictionary()
         dic.import_from_strings(tk[0].strip(), tk[1].strip())
         self.assertIs(dic.size(), 1)
+
+    def test_wildcard_class(self):
+        wild = Wildcard("ter?na")
+        self.assertTrue(wild.validate())
+        self.assertRaises(ValueError, Wildcard, "ter?na?")
+        self.assertTrue(Wildcard("täht?").validate())
+        self.assertTrue(Wildcard("?äht").validate())
+
+        self.assertTrue(wild.matches("terina"))
+        self.assertTrue(wild.matches("terana"))
+        self.assertTrue(wild.matches("teruna"))
+        self.assertFalse(wild.matches("terbilna"))
+        self.assertFalse(wild.matches("ter8na"))
+
+        wild = Wildcard("tern?")
+        self.assertTrue(wild.validate())
+        self.assertTrue(wild.matches("terna"))
+        self.assertTrue(wild.matches("ternä"))
+
+
+    def test_wildcard_search(self):
+        d = domain.Dictionary.from_translations(
+            [domain.Translation.from_multiple("urub", ["lim", "mim"]),
+             domain.Translation.from_multiple("urib", ["rip", "vino"]),
+             domain.Translation("uretm", "pippa")])
+
+        results: dict[str, domain.Translation] = d.search_wildcard("ur?b")
+        self.assertIs(len(results), 2)
+        self.assertIsNot(results["urub"], None)
+        self.assertIsNot(results["urib"], None)
+        self.assertIsNone(results.get("uretm"))
 
 if __name__ == '__main__':
     unittest.main()

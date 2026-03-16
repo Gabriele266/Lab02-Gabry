@@ -1,6 +1,9 @@
 # Module with all the domain classes
 import re
+from collections import defaultdict
 from io import UnsupportedOperation
+
+from src.domain.search import Wildcard
 
 """Check if a string is a single word with no numbers, spaces, symbols, accepting also unicode chars"""
 def is_valid_input(s: str) -> bool:
@@ -72,6 +75,9 @@ class Translation:
 
     def __eq__(self, other):
         return self.alien == other.alien and self.italian == other.italian
+
+    def __str__(self):
+        return f"{self._alien} -> {self._italian}"
 
 class Dictionary:
     _translations: dict[str, set[str]] = {}        # dizionario con alien - italian
@@ -151,8 +157,20 @@ class Dictionary:
 
     def print_all(self):
         print(f"Dictionary with {self.size()} translations")
-
         self.foreach_trans(lambda t: t.print())
+
+    def search_wildcard(self, wildcard_s :str) -> dict[str, Translation] | None:
+        """Search a translation into the dictionary by specifing a search wildcard (1 unknown character ?)
+        Returns a default-dictionary with all the matching alien terms and translations
+        """
+        wildcard = Wildcard(wildcard_s)
+
+        results: dict[str, Translation] = defaultdict()
+        for alien in self._translations:
+            if wildcard.matches(alien):
+                results[alien] = Translation.from_multiple(alien, list(self._translations[alien]))
+
+        return results
 
     def __str__(self):
         return f"Dictionary with {len(self._translations)} translations"

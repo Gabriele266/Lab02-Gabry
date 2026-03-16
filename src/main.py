@@ -60,7 +60,26 @@ def _search_translation(dictionary: domain.Dictionary):
     return False
 
 def _search_wildcard(dictionary: domain.Dictionary):
-    pass        # TODO: Implement in program logic
+    w = input("Insert wildcard word to search for (max 1 ?): ")
+
+    try:
+        results = dictionary.search_wildcard(w)
+
+        print()
+
+        if len(results) == 0:
+            print(f"No results for {w}")
+            return
+
+        print("Your search results:")
+        for key in results.keys():
+            print(f"{key}: {results[key].italian}")
+
+        print()
+    except ValueError as e:
+        print(f"Invalid wildcard inserted {w}")
+
+    pass
 
 def _print_dictionary(dictionary: domain.Dictionary):
     dictionary.print_all()
