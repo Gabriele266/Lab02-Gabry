@@ -1,7 +1,8 @@
-from io import UnsupportedOperation
-
 import domain.classes as domain
-import translator.workers as workers
+import flet as ft
+import src.ui.homepage as homepage
+from src.ui.settings import GeneralSettings
+import src.translator.workers as workers
 
 def print_separator():
     print("------------------")
@@ -83,35 +84,41 @@ def _search_wildcard(dictionary: domain.Dictionary):
 
 def _print_dictionary(dictionary: domain.Dictionary):
     dictionary.print_all()
-
-def _main():
-    print("Hello world")
-
-    worker = workers.TranslatorWorker("../dictionary.txt")
-    translations_loaded = worker.load()
-    print(translations_loaded)
-    print(f"There are {translations_loaded.multiple_translations} multiple translations and {translations_loaded.single_translations} single translations")
-
-    while True:
-        print(translations_loaded)
-        choice = console_intro()
-        if choice <= 0 or choice > 5:
-            print("Il valore inserito non va bene")
-            pass
-
-        # Main menu implementation
-        elif choice == 1:
-            r = _add_translation(translations_loaded)
-            if r:
-                worker.write(translations_loaded)   # save only if there are modifications
-        elif choice == 2:
-            _search_translation(translations_loaded)
-        elif choice == 3:
-            _search_wildcard(translations_loaded)
-        elif choice == 4:
-            _print_dictionary(translations_loaded)
-        elif choice == 5:
-            quit()
+#
+# def _main():
+#     print("Hello world")
+#
+#
+#     while True:
+#         print(translations_loaded)
+#         choice = console_intro()
+#         if choice <= 0 or choice > 5:
+#             print("Il valore inserito non va bene")
+#             pass
+#
+#         # Main menu implementation
+#         elif choice == 1:
+#             r = _add_translation(translations_loaded)
+#             if r:
+#                 worker.write(translations_loaded)   # save only if there are modifications
+#         elif choice == 2:
+#             _search_translation(translations_loaded)
+#         elif choice == 3:
+#             _search_wildcard(translations_loaded)
+#         elif choice == 4:
+#             _print_dictionary(translations_loaded)
+#         elif choice == 5:
+#             quit()
 
 if __name__ == "__main__":
-    _main()
+    # Load dictionary from default path
+    try:
+        worker = workers.TranslatorWorker(GeneralSettings.__FILENAME__)
+        dictionary = worker.load()
+        print(dictionary)
+        print(f"There are {dictionary.multiple_translations} multiple translations and {dictionary.single_translations} single translations")
+
+        home = homepage.Homepage(dictionary)
+        ft.run(home.present)
+    except FileNotFoundError as e:
+        print(f"Unable to find dictionary file. {e}")
