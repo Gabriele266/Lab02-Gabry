@@ -4,7 +4,7 @@ class Wildcard:
     __wildcard__regex__ = r"^[^\W\d_]*+[?][^\W\d_]*+$"      # regex for wildcard validation
 
     def __init__(self, wildcard: str):
-        self._wildcard = wildcard.lower()
+        self._wildcard: str = wildcard.lower()
 
         if not self.validate():
             raise ValueError(f"Invalid wildcard supplied {wildcard}")

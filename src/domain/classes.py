@@ -1,7 +1,6 @@
 # Module with all the domain classes
 import re
 from collections import defaultdict
-from io import UnsupportedOperation
 
 from src.domain.search import Wildcard
 
@@ -11,9 +10,6 @@ def is_valid_input(s: str) -> bool:
     return exp.match(s) is not None
 
 class Translation:
-    _alien: str
-    _italian: set[str]
-
     """Check if a new translation is valid (single italian term)"""
     @staticmethod
     def validate(alien: str, italian: str) -> bool:
@@ -44,8 +40,8 @@ class Translation:
             if not Translation.validate(alien, italian):
                 raise ValueError("Invalid input")
 
-        self._alien = alien.lower()
-        self._italian = set(italian.lower().split(","))
+        self._alien: str = alien.lower()
+        self._italian: set[str] = set(italian.lower().split(","))
 
     @property
     def alien(self) -> str:
@@ -80,8 +76,6 @@ class Translation:
         return f"{self._alien} -> {self._italian}"
 
 class Dictionary:
-    _translations: dict[str, set[str]] = {}        # dizionario con alien - italian
-
     def __init__(self):
         self._translations: dict[str, set[str]] = {}
 

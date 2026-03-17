@@ -11,10 +11,8 @@ def set_to_str(st: set[str]) -> str:
     return s
 
 class TranslatorWorker:
-    _filename: str
-
     def __init__(self, filename: str):
-        self._filename = filename
+        self._filename: str = filename
 
     """Load unicode file with translations"""
     def load(self) -> domain.Dictionary:
